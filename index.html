@@ -1,110 +1,140 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>জমির অংশ ক্যালকুলেটর</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body{
-      font-family: Arial, sans-serif;
-      background:#f2f2f2;
-      margin:0;
-      padding:0;
-    }
+<title>স্মার্ট জমি ক্যালকুলেটর</title>
 
-    .container{
-      max-width:500px;
-      margin:50px auto;
-      background:#fff;
-      padding:25px;
-      border-radius:10px;
-      box-shadow:0 0 10px rgba(0,0,0,0.1);
-    }
+<style>
 
-    h2{
-      text-align:center;
-      color:#0b5ed7;
-      margin-bottom:25px;
-    }
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    padding:20px;
+}
 
-    label{
-      font-weight:bold;
-      display:block;
-      margin-top:15px;
-      margin-bottom:5px;
-    }
+.box{
+    max-width:450px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
 
-    input{
-      width:100%;
-      padding:12px;
-      border:1px solid #ccc;
-      border-radius:5px;
-      font-size:16px;
-    }
+h2{
+    text-align:center;
+    color:#0d6efd;
+}
 
-    button{
-      width:100%;
-      margin-top:20px;
-      padding:12px;
-      background:#0b5ed7;
-      color:white;
-      border:none;
-      border-radius:5px;
-      font-size:18px;
-      cursor:pointer;
-    }
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
 
-    button:hover{
-      background:#084298;
-    }
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
 
-    .result{
-      margin-top:25px;
-      padding:15px;
-      background:#e9f7ef;
-      border-left:5px solid green;
-      font-size:18px;
-      font-weight:bold;
-    }
-  </style>
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#0d6efd;
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-size:16px;
+}
+
+.result{
+    margin-top:20px;
+    padding:15px;
+    background:#eef8f0;
+    border-left:5px solid green;
+}
+
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h2>জমির অংশ ক্যালকুলেটর</h2>
+<div class="box">
 
-    <label>অংশ অনুযায়ী জমির পরিমান</label>
-    <input type="number" id="partLand" placeholder="মান লিখুন">
+<h2>স্মার্ট জমি ক্যালকুলেটর</h2>
 
-    <label>দাগে মোট জমির পরিমান</label>
-    <input type="number" id="totalLand" placeholder="মান লিখুন">
+<label>অংশ অনুযায়ী জমির পরিমান (A)</label>
+<input type="number" id="a">
 
-    <button onclick="calculate()">হিসাব করুন</button>
+<label>দাগে মোট জমির পরিমান (B)</label>
+<input type="number" id="b">
 
-    <div class="result" id="result">
-      ফলাফল এখানে দেখাবে
-    </div>
-  </div>
+<label>দাগের মধ্যে অত্র খতিয়ানের অংশ (C)</label>
+<input type="number" id="c" step="any">
 
-  <script>
-    function calculate() {
+<button onclick="calculate()">হিসাব করুন</button>
 
-      let partLand = parseFloat(document.getElementById("partLand").value);
-      let totalLand = parseFloat(document.getElementById("totalLand").value);
+<div class="result" id="result">
+ফলাফল এখানে দেখাবে
+</div>
 
-      if(isNaN(partLand) || isNaN(totalLand) || totalLand === 0){
-        document.getElementById("result").innerHTML =
-          "সঠিক সংখ্যা দিন এবং মোট জমির পরিমান ০ হতে পারবে না।";
+</div>
+
+<script>
+
+function calculate(){
+
+    let a = parseFloat(document.getElementById('a').value);
+    let b = parseFloat(document.getElementById('b').value);
+    let c = parseFloat(document.getElementById('c').value);
+
+    let filled = 0;
+
+    if(!isNaN(a)) filled++;
+    if(!isNaN(b)) filled++;
+    if(!isNaN(c)) filled++;
+
+    if(filled !== 2){
+        document.getElementById('result').innerHTML =
+        "শুধু ২টি ঘর পূরণ করুন";
         return;
-      }
-
-      let result = partLand / totalLand;
-
-      document.getElementById("result").innerHTML =
-        "দাগের মধ্যে অত্র খতিয়ানের অংশ = " + result.toFixed(6);
     }
-  </script>
+
+    // C বের করবে
+    if(!isNaN(a) && !isNaN(b) && isNaN(c)){
+
+        c = a / b;
+
+        document.getElementById('result').innerHTML =
+        "দাগের মধ্যে অত্র খতিয়ানের অংশ = " + c.toFixed(6);
+    }
+
+    // A বের করবে
+    else if(isNaN(a) && !isNaN(b) && !isNaN(c)){
+
+        a = c * b;
+
+        document.getElementById('result').innerHTML =
+        "অংশ অনুযায়ী জমির পরিমান = " + a.toFixed(6);
+    }
+
+    // B বের করবে
+    else if(!isNaN(a) && isNaN(b) && !isNaN(c)){
+
+        b = a / c;
+
+        document.getElementById('result').innerHTML =
+        "দাগে মোট জমির পরিমান = " + b.toFixed(6);
+    }
+
+}
+
+</script>
 
 </body>
 </html>
