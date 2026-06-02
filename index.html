@@ -6,10 +6,18 @@
 
 <title>স্মার্ট জমি ক্যালকুলেটর</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-    font-family: Arial;
+    font-family:'Hind Siliguri', sans-serif;
     background:#f2f2f2;
     padding:20px;
 }
@@ -18,45 +26,94 @@ body{
     max-width:450px;
     margin:auto;
     background:white;
-    padding:20px;
-    border-radius:10px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
 
 h2{
     text-align:center;
     color:#0d6efd;
+    margin-bottom:20px;
 }
 
 label{
     display:block;
     margin-top:15px;
-    font-weight:bold;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#333;
 }
 
 input{
     width:100%;
-    padding:10px;
-    margin-top:5px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
-
-button{
-    width:100%;
     padding:12px;
-    margin-top:20px;
-    background:#0d6efd;
-    color:white;
-    border:none;
-    border-radius:5px;
+    border:1px solid #ccc;
+    border-radius:8px;
     font-size:16px;
 }
 
-.result{
+.buttons{
+    display:flex;
+    gap:10px;
     margin-top:20px;
-    padding:15px;
+}
+
+button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.calculate-btn{
+    background:#0d6efd;
+    color:white;
+}
+
+.calculate-btn:hover{
+    background:#0b5ed7;
+}
+
+.reset-btn{
+    background:#dc3545;
+    color:white;
+}
+
+.reset-btn:hover{
+    background:#bb2d3b;
+}
+
+#copyBtn{
+    width:100%;
+    margin-top:12px;
+    background:#198754;
+    color:white;
+}
+
+#copyBtn:hover{
+    background:#157347;
+}
+
+.result{
+    margin-top:25px;
     background:#eef8f0;
     border-left:5px solid green;
+    padding:15px;
+    border-radius:8px;
+    font-size:18px;
+    line-height:1.8;
+    word-break:break-word;
+}
+
+.footer{
+    text-align:center;
+    margin-top:18px;
+    font-size:14px;
+    color:#777;
 }
 
 </style>
@@ -69,18 +126,34 @@ button{
 <h2>স্মার্ট জমি ক্যালকুলেটর</h2>
 
 <label>অংশ অনুযায়ী জমির পরিমান (A)</label>
-<input type="number" id="a">
+<input type="number" id="a" placeholder="যেমন: 25">
 
 <label>দাগে মোট জমির পরিমান (B)</label>
-<input type="number" id="b">
+<input type="number" id="b" placeholder="যেমন: 100">
 
 <label>দাগের মধ্যে অত্র খতিয়ানের অংশ (C)</label>
-<input type="number" id="c" step="any">
+<input type="number" id="c" step="any" placeholder="যেমন: 0.25">
 
-<button onclick="calculate()">হিসাব করুন</button>
+<div class="buttons">
+    <button class="calculate-btn" onclick="calculate()">
+        হিসাব করুন
+    </button>
+
+    <button class="reset-btn" onclick="resetForm()">
+        রিসেট
+    </button>
+</div>
 
 <div class="result" id="result">
 ফলাফল এখানে দেখাবে
+</div>
+
+<button onclick="copyResult()" id="copyBtn">
+📋 ফলাফল কপি করুন
+</button>
+
+<div class="footer">
+Developed for Land Share Calculation
 </div>
 
 </div>
@@ -100,18 +173,31 @@ function calculate(){
     if(!isNaN(c)) filled++;
 
     if(filled !== 2){
+
         document.getElementById('result').innerHTML =
-        "শুধু ২টি ঘর পূরণ করুন";
+        "⚠️ শুধুমাত্র ২টি ঘর পূরণ করুন";
+
         return;
     }
 
     // C বের করবে
     if(!isNaN(a) && !isNaN(b) && isNaN(c)){
 
+        if(b == 0){
+
+            document.getElementById('result').innerHTML =
+            "⚠️ মোট জমির পরিমান ০ হতে পারবে না";
+
+            return;
+        }
+
         c = a / b;
 
         document.getElementById('result').innerHTML =
-        "দাগের মধ্যে অত্র খতিয়ানের অংশ = " + c.toFixed(6);
+        `
+        <strong>দাগের মধ্যে অত্র খতিয়ানের অংশ:</strong><br>
+        ${c.toFixed(6)}
+        `;
     }
 
     // A বের করবে
@@ -120,18 +206,52 @@ function calculate(){
         a = c * b;
 
         document.getElementById('result').innerHTML =
-        "অংশ অনুযায়ী জমির পরিমান = " + a.toFixed(6);
+        `
+        <strong>অংশ অনুযায়ী জমির পরিমান:</strong><br>
+        ${a.toFixed(6)}
+        `;
     }
 
     // B বের করবে
     else if(!isNaN(a) && isNaN(b) && !isNaN(c)){
 
+        if(c == 0){
+
+            document.getElementById('result').innerHTML =
+            "⚠️ অংশের মান ০ হতে পারবে না";
+
+            return;
+        }
+
         b = a / c;
 
         document.getElementById('result').innerHTML =
-        "দাগে মোট জমির পরিমান = " + b.toFixed(6);
+        `
+        <strong>দাগে মোট জমির পরিমান:</strong><br>
+        ${b.toFixed(6)}
+        `;
     }
 
+}
+
+function resetForm(){
+
+    document.getElementById('a').value = "";
+    document.getElementById('b').value = "";
+    document.getElementById('c').value = "";
+
+    document.getElementById('result').innerHTML =
+    "ফলাফল এখানে দেখাবে";
+}
+
+function copyResult(){
+
+    let text =
+    document.getElementById('result').innerText;
+
+    navigator.clipboard.writeText(text);
+
+    alert("ফলাফল কপি হয়েছে ✅");
 }
 
 </script>
