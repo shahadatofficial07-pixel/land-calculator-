@@ -203,7 +203,7 @@ Developed for Land Share Calculation
 
 window.lastResult = "";
 
-// বাংলা সংখ্যা → ইংরেজি সংখ্যা
+// বাংলা সংখ্যা → ইংরেজি
 
 function convertBanglaToEnglish(number){
 
@@ -215,6 +215,23 @@ function convertBanglaToEnglish(number){
     for(let i = 0; i < bangla.length; i++){
 
         converted = converted.split(bangla[i]).join(english[i]);
+    }
+
+    return converted;
+}
+
+// ইংরেজি সংখ্যা → বাংলা
+
+function convertEnglishToBangla(number){
+
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+
+    let converted = number.toString();
+
+    for(let i = 0; i < english.length; i++){
+
+        converted = converted.split(english[i]).join(bangla[i]);
     }
 
     return converted;
@@ -234,6 +251,16 @@ function calculate(){
     let a = getNumber('a');
     let b = getNumber('b');
     let c = getNumber('c');
+
+    // বাংলা input detect
+
+    let rawInput =
+    document.getElementById('a').value +
+    document.getElementById('b').value +
+    document.getElementById('c').value;
+
+    let useBangla =
+    /[০-৯]/.test(rawInput);
 
     let filled = 0;
 
@@ -265,6 +292,11 @@ function calculate(){
 
         window.lastResult = c.toFixed(6);
 
+        if(useBangla){
+            window.lastResult =
+            convertEnglishToBangla(window.lastResult);
+        }
+
         document.getElementById('result').innerHTML =
         `
         <strong>দাগের মধ্যে অত্র খতিয়ানের অংশ:</strong><br>
@@ -279,6 +311,11 @@ function calculate(){
         a = c * b;
 
         window.lastResult = a.toFixed(6);
+
+        if(useBangla){
+            window.lastResult =
+            convertEnglishToBangla(window.lastResult);
+        }
 
         document.getElementById('result').innerHTML =
         `
@@ -302,6 +339,11 @@ function calculate(){
         b = a / c;
 
         window.lastResult = b.toFixed(6);
+
+        if(useBangla){
+            window.lastResult =
+            convertEnglishToBangla(window.lastResult);
+        }
 
         document.getElementById('result').innerHTML =
         `
