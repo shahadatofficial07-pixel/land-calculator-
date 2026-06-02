@@ -34,7 +34,14 @@ body{
 h2{
     text-align:center;
     color:#0d6efd;
-    margin-bottom:20px;
+    margin-bottom:8px;
+}
+
+.sub-text{
+    text-align:center;
+    color:#666;
+    font-size:14px;
+    margin-bottom:18px;
 }
 
 label{
@@ -116,6 +123,28 @@ button{
     color:#777;
 }
 
+/* Notification */
+
+.toast{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#198754;
+    color:white;
+    padding:12px 18px;
+    border-radius:8px;
+    font-size:15px;
+    opacity:0;
+    visibility:hidden;
+    transition:0.3s;
+    z-index:999;
+}
+
+.toast.show{
+    opacity:1;
+    visibility:visible;
+}
+
 </style>
 </head>
 
@@ -124,6 +153,10 @@ button{
 <div class="box">
 
 <h2>স্মার্ট জমি ক্যালকুলেটর</h2>
+
+<p class="sub-text">
+যে কোন ২ টি ভ্যালু দিন
+</p>
 
 <label>অংশ অনুযায়ী জমির পরিমান (A)</label>
 <input type="number" id="a" placeholder="যেমন: 25">
@@ -135,13 +168,15 @@ button{
 <input type="number" id="c" step="any" placeholder="যেমন: 0.25">
 
 <div class="buttons">
-    <button class="calculate-btn" onclick="calculate()">
-        হিসাব করুন
-    </button>
 
-    <button class="reset-btn" onclick="resetForm()">
-        রিসেট
-    </button>
+<button class="calculate-btn" onclick="calculate()">
+হিসাব করুন
+</button>
+
+<button class="reset-btn" onclick="resetForm()">
+রিসেট
+</button>
+
 </div>
 
 <div class="result" id="result">
@@ -158,7 +193,15 @@ Developed for Land Share Calculation
 
 </div>
 
+<!-- Notification -->
+
+<div class="toast" id="toast">
+✅ কপি হয়েছে
+</div>
+
 <script>
+
+window.lastResult = "";
 
 function calculate(){
 
@@ -181,6 +224,7 @@ function calculate(){
     }
 
     // C বের করবে
+
     if(!isNaN(a) && !isNaN(b) && isNaN(c)){
 
         if(b == 0){
@@ -193,26 +237,32 @@ function calculate(){
 
         c = a / b;
 
+        window.lastResult = c.toFixed(6);
+
         document.getElementById('result').innerHTML =
         `
         <strong>দাগের মধ্যে অত্র খতিয়ানের অংশ:</strong><br>
-        ${c.toFixed(6)}
+        ${window.lastResult}
         `;
     }
 
     // A বের করবে
+
     else if(isNaN(a) && !isNaN(b) && !isNaN(c)){
 
         a = c * b;
 
+        window.lastResult = a.toFixed(6);
+
         document.getElementById('result').innerHTML =
         `
         <strong>অংশ অনুযায়ী জমির পরিমান:</strong><br>
-        ${a.toFixed(6)}
+        ${window.lastResult}
         `;
     }
 
     // B বের করবে
+
     else if(!isNaN(a) && isNaN(b) && !isNaN(c)){
 
         if(c == 0){
@@ -225,10 +275,12 @@ function calculate(){
 
         b = a / c;
 
+        window.lastResult = b.toFixed(6);
+
         document.getElementById('result').innerHTML =
         `
         <strong>দাগে মোট জমির পরিমান:</strong><br>
-        ${b.toFixed(6)}
+        ${window.lastResult}
         `;
     }
 
@@ -242,14 +294,21 @@ function resetForm(){
 
     document.getElementById('result').innerHTML =
     "ফলাফল এখানে দেখাবে";
+
+    window.lastResult = "";
 }
 
 function copyResult(){
 
-    let text =
-    document.getElementById('result').innerText;
+    navigator.clipboard.writeText(window.lastResult);
 
-    navigator.clipboard.writeText(text);
+    let toast = document.getElementById('toast');
+
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2000);
 }
 
 </script>
