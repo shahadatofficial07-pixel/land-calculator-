@@ -159,13 +159,13 @@ button{
 </p>
 
 <label>অংশ অনুযায়ী জমির পরিমান (A)</label>
-<input type="number" id="a" placeholder="যেমন: 25">
+<input type="text" id="a" placeholder="যেমন: ২৫">
 
 <label>দাগে মোট জমির পরিমান (B)</label>
-<input type="number" id="b" placeholder="যেমন: 100">
+<input type="text" id="b" placeholder="যেমন: ১০০">
 
 <label>দাগের মধ্যে অত্র খতিয়ানের অংশ (C)</label>
-<input type="number" id="c" step="any" placeholder="যেমন: 0.25">
+<input type="text" id="c" placeholder="যেমন: ০.২৫">
 
 <div class="buttons">
 
@@ -203,11 +203,37 @@ Developed for Land Share Calculation
 
 window.lastResult = "";
 
+// বাংলা সংখ্যা → ইংরেজি সংখ্যা
+
+function convertBanglaToEnglish(number){
+
+    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    let converted = number;
+
+    for(let i = 0; i < bangla.length; i++){
+
+        converted = converted.split(bangla[i]).join(english[i]);
+    }
+
+    return converted;
+}
+
+function getNumber(id){
+
+    let value = document.getElementById(id).value.trim();
+
+    value = convertBanglaToEnglish(value);
+
+    return parseFloat(value);
+}
+
 function calculate(){
 
-    let a = parseFloat(document.getElementById('a').value);
-    let b = parseFloat(document.getElementById('b').value);
-    let c = parseFloat(document.getElementById('c').value);
+    let a = getNumber('a');
+    let b = getNumber('b');
+    let c = getNumber('c');
 
     let filled = 0;
 
