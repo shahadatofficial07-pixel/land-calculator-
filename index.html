@@ -20,15 +20,42 @@ body{
     font-family:'Hind Siliguri', sans-serif;
     background:#f2f2f2;
     padding:20px;
+    transition:0.3s;
+}
+
+body.dark{
+    background:#121212;
+    color:white;
 }
 
 .box{
-    max-width:450px;
+    max-width:500px;
     margin:auto;
     background:white;
     padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+    border-radius:18px;
+    box-shadow:0 5px 25px rgba(0,0,0,0.12);
+    transition:0.3s;
+}
+
+body.dark .box{
+    background:#1e1e1e;
+}
+
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.toggle-btn{
+    border:none;
+    background:#0d6efd;
+    color:white;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
 }
 
 h2{
@@ -41,7 +68,11 @@ h2{
     text-align:center;
     color:#666;
     font-size:14px;
-    margin-bottom:18px;
+    margin-bottom:20px;
+}
+
+body.dark .sub-text{
+    color:#bbb;
 }
 
 label{
@@ -49,10 +80,9 @@ label{
     margin-top:15px;
     margin-bottom:8px;
     font-weight:600;
-    color:#333;
 }
 
-input{
+input, select{
     width:100%;
     padding:12px;
     border:1px solid #ccc;
@@ -81,17 +111,9 @@ button{
     color:white;
 }
 
-.calculate-btn:hover{
-    background:#0b5ed7;
-}
-
 .reset-btn{
     background:#dc3545;
     color:white;
-}
-
-.reset-btn:hover{
-    background:#bb2d3b;
 }
 
 #copyBtn{
@@ -101,10 +123,6 @@ button{
     color:white;
 }
 
-#copyBtn:hover{
-    background:#157347;
-}
-
 .result{
     margin-top:25px;
     background:#eef8f0;
@@ -112,15 +130,25 @@ button{
     padding:15px;
     border-radius:8px;
     font-size:18px;
-    line-height:1.8;
-    word-break:break-word;
+    line-height:1.9;
+    animation:fadeIn 0.4s;
 }
 
-.footer{
-    text-align:center;
-    margin-top:18px;
-    font-size:14px;
-    color:#777;
+body.dark .result{
+    background:#263126;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 .toast{
@@ -131,16 +159,25 @@ button{
     color:white;
     padding:12px 18px;
     border-radius:8px;
-    font-size:15px;
     opacity:0;
     visibility:hidden;
     transition:0.3s;
-    z-index:999;
 }
 
 .toast.show{
     opacity:1;
     visibility:visible;
+}
+
+.precision-box{
+    margin-top:15px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    font-size:14px;
+    color:#777;
 }
 
 </style>
@@ -149,6 +186,16 @@ button{
 <body>
 
 <div class="box">
+
+<div class="top-bar">
+
+<div></div>
+
+<button class="toggle-btn" onclick="toggleDarkMode()">
+🌙 Mode
+</button>
+
+</div>
 
 <h2>স্মার্ট জমি ক্যালকুলেটর</h2>
 
@@ -164,6 +211,21 @@ button{
 
 <label>দাগের মধ্যে অত্র খতিয়ানের অংশ (C)</label>
 <input type="text" id="c" placeholder="যেমন: ০.২৫">
+
+<div class="precision-box">
+
+<label>Decimal Precision</label>
+
+<select id="precision">
+
+<option value="6">6 Digit</option>
+<option value="8">8 Digit</option>
+<option value="10" selected>10 Digit</option>
+<option value="12">12 Digit</option>
+
+</select>
+
+</div>
 
 <div class="buttons">
 
@@ -203,14 +265,18 @@ window.lastResult = "";
 
 function convertBanglaToEnglish(number){
 
-    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-    const english = ['0','1','2','3','4','5','6','7','8','9'];
+    const bangla =
+    ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+
+    const english =
+    ['0','1','2','3','4','5','6','7','8','9'];
 
     let converted = number;
 
-    for(let i = 0; i < bangla.length; i++){
+    for(let i=0; i<bangla.length; i++){
 
-        converted = converted.split(bangla[i]).join(english[i]);
+        converted =
+        converted.split(bangla[i]).join(english[i]);
     }
 
     return converted;
@@ -220,14 +286,18 @@ function convertBanglaToEnglish(number){
 
 function convertEnglishToBangla(number){
 
-    const english = ['0','1','2','3','4','5','6','7','8','9'];
-    const bangla = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const english =
+    ['0','1','2','3','4','5','6','7','8','9'];
+
+    const bangla =
+    ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
 
     let converted = number.toString();
 
-    for(let i = 0; i < english.length; i++){
+    for(let i=0; i<english.length; i++){
 
-        converted = converted.split(english[i]).join(bangla[i]);
+        converted =
+        converted.split(english[i]).join(bangla[i]);
     }
 
     return converted;
@@ -235,18 +305,44 @@ function convertEnglishToBangla(number){
 
 function getNumber(id){
 
-    let value = document.getElementById(id).value.trim();
+    let value =
+    document.getElementById(id).value.trim();
 
-    value = convertBanglaToEnglish(value);
+    value =
+    convertBanglaToEnglish(value);
 
     return parseFloat(value);
 }
+
+// Dark mode
+
+function toggleDarkMode(){
+
+    document.body.classList.toggle('dark');
+}
+
+// Auto live calculation
+
+document.querySelectorAll("input, select")
+.forEach(input => {
+
+    input.addEventListener("input", () => {
+
+        calculate();
+    });
+
+});
 
 function calculate(){
 
     let a = getNumber('a');
     let b = getNumber('b');
     let c = getNumber('c');
+
+    let precision =
+    parseInt(
+    document.getElementById('precision').value
+    );
 
     let rawInput =
     document.getElementById('a').value +
@@ -270,6 +366,9 @@ function calculate(){
         return;
     }
 
+    let resultTitle = "";
+    let value = 0;
+
     // C বের করবে
 
     if(!isNaN(a) && !isNaN(b) && isNaN(c)){
@@ -282,40 +381,28 @@ function calculate(){
             return;
         }
 
-        c = a / b;
+        if(a > b){
 
-        window.lastResult = c.toFixed(10);
+            document.getElementById('result').innerHTML =
+            "⚠️ অংশ মোট জমির চেয়ে বেশি হতে পারে না";
 
-        if(useBangla){
-            window.lastResult =
-            convertEnglishToBangla(window.lastResult);
+            return;
         }
 
-        document.getElementById('result').innerHTML =
-        `
-        <strong>দাগের মধ্যে অত্র খতিয়ানের অংশ:</strong><br>
-        ${window.lastResult}
-        `;
+        value = a / b;
+
+        resultTitle =
+        "দাগের মধ্যে অত্র খতিয়ানের অংশ";
     }
 
     // A বের করবে
 
     else if(isNaN(a) && !isNaN(b) && !isNaN(c)){
 
-        a = c * b;
+        value = c * b;
 
-        window.lastResult = a.toFixed(10);
-
-        if(useBangla){
-            window.lastResult =
-            convertEnglishToBangla(window.lastResult);
-        }
-
-        document.getElementById('result').innerHTML =
-        `
-        <strong>অংশ অনুযায়ী জমির পরিমান:</strong><br>
-        ${window.lastResult}
-        `;
+        resultTitle =
+        "অংশ অনুযায়ী জমির পরিমান";
     }
 
     // B বের করবে
@@ -330,22 +417,28 @@ function calculate(){
             return;
         }
 
-        b = a / c;
+        value = a / c;
 
-        window.lastResult = b.toFixed(10);
-
-        if(useBangla){
-            window.lastResult =
-            convertEnglishToBangla(window.lastResult);
-        }
-
-        document.getElementById('result').innerHTML =
-        `
-        <strong>দাগে মোট জমির পরিমান:</strong><br>
-        ${window.lastResult}
-        `;
+        resultTitle =
+        "দাগে মোট জমির পরিমান";
     }
 
+    let finalResult =
+    value.toFixed(precision);
+
+    if(useBangla){
+
+        finalResult =
+        convertEnglishToBangla(finalResult);
+    }
+
+    window.lastResult = finalResult;
+
+    document.getElementById('result').innerHTML =
+    `
+    <strong>${resultTitle}:</strong><br>
+    ${finalResult}
+    `;
 }
 
 function resetForm(){
@@ -364,12 +457,15 @@ function copyResult(){
 
     navigator.clipboard.writeText(window.lastResult);
 
-    let toast = document.getElementById('toast');
+    let toast =
+    document.getElementById('toast');
 
     toast.classList.add('show');
 
     setTimeout(() => {
+
         toast.classList.remove('show');
+
     }, 2000);
 }
 
